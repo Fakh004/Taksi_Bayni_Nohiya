@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Drivers{% endblock title %}
+
+{% block main %}
+<div class="container mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-center mb-6 text-white">🚖 Drivers</h1>
+    <form method="get" class="flex flex-col sm:flex-row items-center justify-center mb-8 gap-4">
+        <input type="text" name="name" placeholder="Search by name" value="{{ request.GET.name }}" 
+               class="px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="number" name="min_rating" placeholder="Min rating" value="{{ request.GET.min_rating }}" 
+               class="px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select name="status" class="px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">All status</option>
+            <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Online</option>
+            <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>Offline</option>
+        </select>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-300">
+            Filter
+        </button>
+    </form>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for driver in drivers %}
+        <div class="bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-6 hover:scale-105 transition-transform duration-300">
+            
+            <div class="flex items-center mb-4">
+                 <div class="driver-img-wrapper w-16 h-16 rounded-2xl overflow-hidden border-4 border-white/30 shadow-lg">
+                    {% if driver.image %}
+                        <img src="{{ driver.image.url }}" alt="{{ driver.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-700 flex items-center justify-center text-gray-300 text-xs">
+                            No Image
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="ml-4">
+                    <h5 class="text-lg font-semibold text-white">{{ driver.name }}</h5>
+                    <p class="text-gray-400 text-sm">{{ driver.car_model }}</p>
+                </div>
+            </div>
+            <ul class="text-gray-200 text-sm mb-4 space-y-1">
+                <li>📞 <strong>Phone:</strong> {{ driver.phone_number }}</li>
+                <li>🚘 <strong>Car Number:</strong> {{ driver.car_number }}</li>
+                <li>⭐ <strong>Rating:</strong> {{ driver.rating }}</li>
+                <li>
+                    🟢 <strong>Status:</strong>
+                    {% if driver.status %}
+                        <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">Online</span>
+                    {% else %}
+                        <span class="px-2 py-1 bg-gray-500 text-white rounded-full text-xs">Offline</span>
+                    {% endif %}
+                </li>
+            </ul>
+            <a href="{% url 'driver_detail' driver.id %}" class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-center font-semibold transition-colors duration-300 w-full block">
+                View Profile
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-center text-gray-400 col-span-full">No drivers found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
