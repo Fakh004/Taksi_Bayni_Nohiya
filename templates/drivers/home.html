@@ -190,11 +190,11 @@ Home - TaxiPro
             
             <div class="flex flex-wrap justify-center gap-4 pt-4">
                 {% if user.is_authenticated %}
-                    <a href="#" class="inline-flex items-center gap-2 px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-bold rounded-xl hover:from-blue-700 hover:to-blue-600 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl shadow-blue-500/50">
+                    <a href="{% url 'ride_create' %}" class="inline-flex items-center gap-2 px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-bold rounded-xl hover:from-blue-700 hover:to-blue-600 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-xl shadow-blue-500/50">
                         <i class="bi bi-car-front-fill"></i>
                         Book Your First Ride
                     </a>
-                    <a href="#" class="inline-flex items-center gap-2 px-10 py-5 bg-white/10 border-2 border-white/30 text-white text-lg font-bold rounded-xl hover:bg-white/20 hover:border-white/50 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
+                    <a href="{% url 'ride_list' %}" class="inline-flex items-center gap-2 px-10 py-5 bg-white/10 border-2 border-white/30 text-white text-lg font-bold rounded-xl hover:bg-white/20 hover:border-white/50 transform hover:scale-105 transition-all duration-300 backdrop-blur-sm">
                         <i class="bi bi-list-ul"></i>
                         View My Rides
                     </a>
