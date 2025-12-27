@@ -31,9 +31,10 @@ class Payments(models.Model):
 
 class RideBooking(models.Model):
     ride = models.ForeignKey(Rides, on_delete=models.CASCADE, related_name="bookings")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)          
+    phone = models.CharField(max_length=50)       
     seat_number = models.PositiveSmallIntegerField()
     booked_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.ride.driver.name} (Seat {self.seat_number})"
+        return f"{self.name} - {self.ride.driver.name} (Seat {self.seat_number})"

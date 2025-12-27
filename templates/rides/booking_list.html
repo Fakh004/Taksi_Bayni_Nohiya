@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+
+{% block main %}
+<div class="container mx-auto py-10 px-4">
+    <div class="max-w-4xl mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-8 animate__animated animate__fadeInUp">
+
+        <h2 class="text-3xl font-bold text-center text-white mb-6">📋 My Bookings</h2>
+
+        {% if bookings %}
+            <div class="overflow-x-auto rounded-lg">
+                <table class="min-w-full text-white">
+                    <thead class="bg-gray-800">
+                        <tr>
+                            <th class="py-2 px-4 border-b">Ride</th>
+                            <th class="py-2 px-4 border-b">Driver</th>
+                            <th class="py-2 px-4 border-b">Seat</th>
+                            <th class="py-2 px-4 border-b">From</th>
+                            <th class="py-2 px-4 border-b">To</th>
+                            <th class="py-2 px-4 border-b">Booked At</th>
+                            <th class="py-2 px-4 border-b">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr class="text-center hover:bg-gray-700 transition-colors duration-200">
+                            <td class="py-2 px-4 border-b">{{ booking.ride.id }}</td>
+                            <td class="py-2 px-4 border-b">{{ booking.ride.driver.name }}</td>
+                            <td class="py-2 px-4 border-b">{{ booking.seat_number }}</td>
+                            <td class="py-2 px-4 border-b">{{ booking.ride.start_location }}</td>
+                            <td class="py-2 px-4 border-b">{{ booking.ride.end_location }}</td>
+                            <td class="py-2 px-4 border-b">{{ booking.booked_at|date:"M d, Y H:i" }}</td>
+                            <td class="py-2 px-4 border-b space-x-2">
+                                <a href="{% url 'ride_detail' booking.ride.id %}"
+                                   class="bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-sm">
+                                    View Ride
+                                </a>
+                                <a href="{% url 'ride_book_cancel' booking.id %}"
+                                   class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">
+                                    Cancel Booking
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-gray-300 text-lg">You have no bookings yet.</p>
+        {% endif %}
+
+        <div class="text-center mt-6">
+            <a href="{% url 'ride_list' %}"
+               class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold">
+                Back to Rides
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate__animated { animation-duration: 0.6s; }
+.animate__fadeInUp { animation-name: fadeInUp; }
+</style>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Rides
+from .models import Rides, RideBooking
 from drivers.models import Drivers
 from django.shortcuts import get_object_or_404
 from accounts.models import CustomUser as User
@@ -124,3 +124,62 @@ def ride_delete(request, ride_id):
     elif request.method == "POST":
         ride.delete()
         return redirect("ride_list")
+
+
+def book_list(request):
+    bookings = RideBooking.objects.filter(user=request.user)
+    return render(request, 'rides/booking_list.html', {'bookings': bookings})
+
+
+def book_ride(request, ride_id):
+    ride = get_object_or_404(Rides, id=ride_id)
+    booked = RideBooking.objects.filter(ride=ride).values_list('seat_number', flat=True)
+    all_seats = [1, 2, 3, 4]
+    available_seats = [s for s in all_seats if s not in booked]
+
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone = request.POST.get("phone", "").strip()
+        seat = request.POST.get("seat_number")
+
+        if not name or not phone:
+            return render(request, "rides/booking_create.html", {
+                "ride": ride,
+                "available_seats": available_seats,
+                "error": "Name and phone are required!",
+                "name": name,
+                "phone": phone
+            })
+
+        if not seat:
+            return render(request, "rides/booking_create.html", {
+                "ride": ride,
+                "available_seats": available_seats,
+                "error": "Please choose a seat!",
+                "name": name,
+                "phone": phone
+            })
+
+        seat = int(seat)
+        if seat not in available_seats:
+            return render(request, "rides/booking_create.html", {
+                "ride": ride,
+                "available_seats": available_seats,
+                "error": "This seat is already taken!",
+                "name": name,
+                "phone": phone
+            })
+
+        RideBooking.objects.create(
+            ride=ride,
+            name=name,
+            phone=phone,
+            seat_number=seat
+        )
+
+        return redirect("booking_list")
+
+    return render(request, "rides/booking_create.html", {
+        "ride": ride,
+        "available_seats": available_seats
+    })
