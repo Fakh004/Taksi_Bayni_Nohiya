@@ -5,6 +5,8 @@ from .models import Drivers
 def is_authenticated(request):
     return request.user.is_authenticated
 
+def home_view(request):
+    return render(request, 'drivers/home.html')
 
 def driver_list(request):
     drivers = Drivers.objects.all()
