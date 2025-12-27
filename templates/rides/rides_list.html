@@ -17,8 +17,7 @@
             <table class="min-w-full text-white">
                 <thead class="bg-gray-800">
                     <tr>
-                        <th class="py-2 px-4 border-b">ID</th>
-                        <th class="py-2 px-4 border-b">User ID</th>
+                        <th class="py-2 px-4 border-b">Username</th>
                         <th class="py-2 px-4 border-b">Driver ID</th>
                         <th class="py-2 px-4 border-b">Start</th>
                         <th class="py-2 px-4 border-b">End</th>
@@ -30,8 +29,7 @@
                 <tbody>
                     {% for ride in rides %}
                     <tr class="text-center hover:bg-gray-700 transition-colors duration-200">
-                        <td class="py-2 px-4 border-b">{{ ride.id }}</td>
-                        <td class="py-2 px-4 border-b">{{ ride.user_id }}</td>
+                        <td class="py-2 px-4 border-b">{{ ride.user }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.driver_id }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.start_location }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.end_location }}</td>
