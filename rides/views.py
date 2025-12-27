@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Rides
 from drivers.models import Drivers
+from django.shortcuts import get_object_or_404
 
 
 def is_authenticated(request):
@@ -20,7 +21,7 @@ def ride_list(request):
         rides = rides.filter(start_location__icontains=start)
     if end:
         rides = rides.filter(end_location__icontains=end)
-    if status in ['pending', 'completed', 'canceled']:
+    if status in ['Waiting for passangers', 'completed', 'canceled']:
         rides = rides.filter(status=status)
 
     return render(request, "rides/rides_list.html", {"rides": rides})
@@ -30,30 +31,38 @@ def ride_list(request):
 
 
 def ride_create(request):
-    if not is_authenticated(request):
-        return render(request, 'rides/message.html', {
-            'message': "🚫 You must log in to create a ride."
-        })
+    drivers = Drivers.objects.all()
+    
+    if request.method == 'POST':
+        driver_id = request.POST.get('driver_id')
+        seat_number = request.POST.get('seat_number')
+        start_location = request.POST.get('start_location')
+        end_location = request.POST.get('end_location')
+        distance_km = request.POST.get('distance_km')
+        price = request.POST.get('price')
+        status = request.POST.get('status')
 
-    if request.method == "GET":
-        drivers = Drivers.objects.all()
-        return render(request, "rides/ride_create.html", {"drivers": drivers})
-
-    if request.method == "POST":
-        driver_name = request.POST.get("driver_name")
-        driver = Drivers.objects.get(name=driver_name)
-
+        driver = Drivers.objects.get(id=driver_id)
         ride = Rides.objects.create(
             user=request.user,
             driver=driver,
-            start_location=request.POST.get("start_location"),
-            end_location=request.POST.get("end_location"),
-            distance_km=request.POST.get("distance_km"),
-            price=request.POST.get("price"),
-            status=request.POST.get("status")
+            start_location=start_location,
+            end_location=end_location,
+            distance_km=distance_km,
+            price=price,
+            status=status
         )
+        ride.seat_number = seat_number
+        ride.save()
+        return redirect('ride_list')
+    
+    context = {
+        'drivers': drivers,
+        'available_seats': [1,2,3,4],  
+    }
+    return render(request, 'rides/ride_create.html', context)
 
-        return redirect("ride_detail", ride_id=ride.id)
+
 
 
 

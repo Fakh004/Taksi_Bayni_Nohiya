@@ -5,8 +5,8 @@ from accounts.models import CustomUser as User
 # Create your models here. rides 
 
 class Rides(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  
-    driver = models.ForeignKey(Drivers, on_delete=models.CASCADE)  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Drivers, on_delete=models.CASCADE)
     start_location = models.CharField(max_length=255)
     end_location = models.CharField(max_length=255)
     distance_km = models.FloatField()
@@ -16,10 +16,11 @@ class Rides(models.Model):
         choices=[('in process', 'In Process'), ('completed', 'Completed'), ('cancelled', 'Cancelled')],
         default='in process'
     )
+    seat_number = models.PositiveSmallIntegerField(default=1)  # 1, 2, 3, 4
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} -> {self.driver.name}"
+        return f"{self.user.username} -> {self.driver.name} (Seat {self.seat_number})"
 
 class Payments(models.Model):
     ride_id = models.IntegerField(null=True, blank=True)
