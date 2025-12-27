@@ -8,8 +8,9 @@ class Drivers(models.Model):
     phone_number = models.CharField(max_length=15)
     car_model = models.CharField(max_length=100)
     car_number = models.CharField(max_length=20)
+    car_photo = models.ImageField(upload_to='car_images/', null=True, blank=True)
     rating = models.FloatField(default=5.0)
-    status = models.BooleanField(default=True)  # True for active, False for inactive
+    status = models.BooleanField(default=True) 
     created_at = models.DateTimeField(auto_now=True)
 
 class Reviews(models.Model):

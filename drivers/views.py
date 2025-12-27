@@ -42,6 +42,7 @@ def driver_create(request):
             phone_number=request.POST.get('phone_number'),
             car_model=request.POST.get('car_model'),
             car_number=request.POST.get('car_number'),
+            car_photo=request.FILES.get('car_photo'),
             rating=request.POST.get('rating'),
             status=request.POST.get('status') == 'on'
         )
@@ -70,6 +71,7 @@ def driver_update(request, driver_id):
         driver.phone_number = request.POST.get('phone_number')
         driver.car_model = request.POST.get('car_model')
         driver.car_number = request.POST.get('car_number')
+        driver.car_photo = request.FILES.get('car_photo')
         driver.rating = request.POST.get('rating')
         driver.status = request.POST.get('status') == 'true'
 
