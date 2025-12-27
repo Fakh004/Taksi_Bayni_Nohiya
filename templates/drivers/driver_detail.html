@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Driver Details{% endblock title %}
+
+{% block main %}
+<div class="container mx-auto py-10 px-4">
+    <div class="max-w-3xl mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-8 animate__animated animate__fadeInUp">
+
+        <div class="flex items-center mb-6">
+             <div class="driver-img-wrapper w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/30 shadow-lg">
+                    {% if driver.image %}
+                        <img src="{{ driver.image.url }}" alt="{{ driver.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-700 flex items-center justify-center text-gray-300 text-xs">
+                            No Image
+                        </div>
+                    {% endif %}
+                </div>
+            <div class="ml-4">
+                <h2 class="text-2xl font-bold text-white">{{ driver.name }}</h2>
+                <p class="text-gray-400">{{ driver.car_model }}</p>
+            </div>
+        </div>
+
+        <ul class="text-gray-200 mb-6 space-y-2">
+            <li>📞 <strong>Phone:</strong> {{ driver.phone_number }}</li>
+            <li>🚘 <strong>Car Number:</strong> {{ driver.car_number }}</li>
+            <li>⭐ <strong>Rating:</strong> {{ driver.rating }}</li>
+            <li>
+                🟢 <strong>Status:</strong>
+                {% if driver.status %}
+                    <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">Online</span>
+                {% else %}
+                    <span class="px-2 py-1 bg-gray-500 text-white rounded-full text-xs">Offline</span>
+                {% endif %}
+            </li>
+            <li>📅 <strong>Joined:</strong> {{ driver.created_at|date:"M d, Y" }}</li>
+        </ul>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-4">
+            <a href="{% url 'driver_update' driver.id %}" 
+               class="flex-1 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 
+                      text-white py-3 rounded-xl text-center font-bold shadow-lg hover:shadow-2xl 
+                      transform hover:-translate-y-1 transition-all duration-300">
+                Edit Driver
+            </a>
+
+            <a href="{% url 'driver_delete' driver.pk %}" 
+               class="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 
+                      text-white py-3 rounded-xl text-center font-bold shadow-lg hover:shadow-2xl 
+                      transform hover:-translate-y-1 transition-all duration-300">
+                Delete Driver
+            </a>
+
+            <a href="{% url 'driver_list' %}" 
+               class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 
+                      text-white py-3 rounded-xl text-center font-bold shadow-lg hover:shadow-2xl 
+                      transform hover:-translate-y-1 transition-all duration-300">
+                Back
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate__animated { animation-duration: 0.6s; }
+.animate__fadeInUp { animation-name: fadeInUp; }
+</style>
+{% endblock main %}
