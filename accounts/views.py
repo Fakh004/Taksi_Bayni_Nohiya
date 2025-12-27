@@ -1,56 +1,74 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout, authenticate
+from django.http import HttpResponse
 from .models import CustomUser
-from django.contrib.auth import login,logout,authenticate
 
-
+# --- Registration ---
 def register_view(request):
     if request.method == "GET":
-        return render(request,'accounts/register.html')
+        return render(request, 'accounts/register.html')
+
     elif request.method == "POST":
-        username = request.POST.get('username',None)
-        email = request.POST.get('email',None)
-        password = request.POST.get('password',None)
-        confirm = request.POST.get('confirm',None)
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
+        confirm = request.POST.get('confirm', '').strip()
 
         if not username or not email or not password:
-            return render(request,'accounts/register.html',context={'username':username,"email":email,'error':'All fields are required!'})
-        
+            return render(request, 'accounts/register.html', {
+                'username': username,
+                'email': email,
+                'error': 'All fields are required!'
+            })
+
         if password != confirm:
-            return render(request,'accounts/register.html',context={'username':username,'error':"Passwords don't match!"})
-        
-        CustomUser.objects.create_user(username=username,email=email,password=password)
+            return render(request, 'accounts/register.html', {
+                'username': username,
+                'email': email,
+                'error': "Passwords don't match!"
+            })
 
+        if CustomUser.objects.filter(username=username).exists():
+            return render(request, 'accounts/register.html', {
+                'username': username,
+                'error': 'Username already taken!'
+            })
 
-        return HttpResponse('Logined')
+        if CustomUser.objects.filter(email=email).exists():
+            return render(request, 'accounts/register.html', {
+                'username': username,
+                'email': email,
+                'error': 'Email already registered!'
+            })
 
+        user = CustomUser.objects.create_user(username=username, email=email, password=password)
+        login(request, user)
+        return redirect('driver_list')  
 
 
 def login_view(request):
     if request.method == "GET":
         return render(request, 'accounts/login.html')
-    
+
     elif request.method == "POST":
-        username = request.POST.get('username', None)
-        password = request.POST.get('password', None)
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
 
         if not username or not password:
-            return render(request, 'accounts/login.html', context={
+            return render(request, 'accounts/login.html', {
                 'username': username,
                 'error': 'All fields are required!'
             })
-        
-        user = authenticate(request, username=username, password=password)
 
+        user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect("driver_list")
+            return redirect('driver_list')
 
-        return render(request, 'accounts/login.html', context={
+        return render(request, 'accounts/login.html', {
             'username': username,
-            'error': "Such user does not exist!"
+            'error': "Incorrect username or password!"
         })
-    
-
 
 def logout_confirm(request):
-    return render(request, "accounts/logout_confirm.html")
+    return render(request, "logout_confirm.html")

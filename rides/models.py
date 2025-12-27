@@ -28,3 +28,12 @@ class Payments(models.Model):
     payment_method = models.CharField(max_length=50)
     payment_status = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now=True)
+
+class RideBooking(models.Model):
+    ride = models.ForeignKey(Rides, on_delete=models.CASCADE, related_name="bookings")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    seat_number = models.PositiveSmallIntegerField()
+    booked_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.ride.driver.name} (Seat {self.seat_number})"

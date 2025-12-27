@@ -8,9 +8,11 @@
         <h2 class="text-3xl font-bold mb-6 text-center text-white">🚖 Rides List</h2>
 
         <div class="flex justify-end mb-4">
-            <a href="{% url 'ride_create' %}" class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-4 rounded shadow">
-                Create New Ride
-            </a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'ride_create' %}" class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-4 rounded shadow">
+                    Create New Ride
+                </a>
+            {% endif %}
         </div>
 
         <div class="overflow-x-auto rounded-lg">
@@ -18,7 +20,7 @@
                 <thead class="bg-gray-800">
                     <tr>
                         <th class="py-2 px-4 border-b">Username</th>
-                        <th class="py-2 px-4 border-b">Driver ID</th>
+                        <th class="py-2 px-4 border-b">Driver Name</th>
                         <th class="py-2 px-4 border-b">Start</th>
                         <th class="py-2 px-4 border-b">End</th>
                         <th class="py-2 px-4 border-b">Price</th>
@@ -29,29 +31,33 @@
                 <tbody>
                     {% for ride in rides %}
                     <tr class="text-center hover:bg-gray-700 transition-colors duration-200">
-                        <td class="py-2 px-4 border-b">{{ ride.user }}</td>
-                        <td class="py-2 px-4 border-b">{{ ride.driver_id }}</td>
+                        <td class="py-2 px-4 border-b">{{ ride.user.username }}</td>
+                        <td class="py-2 px-4 border-b">{{ ride.driver.name }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.start_location }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.end_location }}</td>
                         <td class="py-2 px-4 border-b">{{ ride.price }}</td>
                         <td class="py-2 px-4 border-b">
                             {% if ride.status == 'completed' %}
                                 <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">Completed</span>
-                            {% elif ride.status == 'pending' %}
-                                <span class="px-2 py-1 bg-yellow-500 text-white rounded-full text-xs">Pending</span>
+                            {% elif ride.status == 'in process' %}
+                                <span class="px-2 py-1 bg-yellow-500 text-white rounded-full text-xs">Waiting for passengers</span>
                             {% else %}
                                 <span class="px-2 py-1 bg-red-500 text-white rounded-full text-xs">Cancelled</span>
                             {% endif %}
                         </td>
                         <td class="py-2 px-4 border-b space-x-2">
-                            <a href="{% url 'ride_detail' ride.id %}" class="bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-sm">View</a>
-                            <a href="{% url 'ride_update' ride.id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-sm">Edit</a>
-                            <a href="{% url 'ride_delete' ride.id %}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">Delete</a>
+                            {% if request.user.is_authenticated %}
+                                <a href="{% url 'ride_detail' ride.id %}" class="bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-sm">View</a>
+                                <a href="{% url 'ride_update' ride.id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-sm">Edit</a>
+                                <a href="{% url 'ride_delete' ride.id %}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">Delete</a>
+                            {% else %}
+                                <a href="#" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm">Бронировать</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="text-center py-4 text-gray-300">No rides found.</td>
+                        <td colspan="7" class="text-center py-4 text-gray-300">No rides found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
