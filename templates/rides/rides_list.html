@@ -47,12 +47,15 @@
                         </td>
                         <td class="py-2 px-4 border-b space-x-2">
                             {% if request.user.is_authenticated %}
-                                <a href="{% url 'ride_detail' ride.id %}" class="bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-sm">View</a>
-                                <a href="{% url 'ride_update' ride.id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-sm">Edit</a>
-                                <a href="{% url 'ride_delete' ride.id %}" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">Delete</a>
-                            {% else %}
-                                <a href="#" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm">Бронировать</a>
-                            {% endif %}
+                             <a href="{% url 'ride_detail' ride.id %}" class="bg-teal-500 hover:bg-teal-600 ...">View</a>
+                                  <a href="{% url 'ride_update' ride.id %}" class="bg-yellow-500 ...">Edit</a>
+    <a href="{% url 'ride_delete' ride.id %}" class="bg-red-500 ...">Delete</a>
+{% else %}
+    <a href="{% url 'login' %}?next={% url 'ride_book' ride.id %}" 
+       class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm">
+        Book Ride
+    </a>
+{% endif %}
                         </td>
                     </tr>
                     {% empty %}
