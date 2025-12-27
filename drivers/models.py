@@ -13,6 +13,10 @@ class Drivers(models.Model):
     status = models.BooleanField(default=True) 
     created_at = models.DateTimeField(auto_now=True)
 
+    
+    def __str__(self):
+        return self.name  
+
 class Reviews(models.Model):
     ride_id = models.IntegerField()
     user_id = models.IntegerField()

@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from .models import Rides
 from drivers.models import Drivers
 from django.shortcuts import get_object_or_404
+from accounts.models import CustomUser as User
+
 
 
 def is_authenticated(request):
@@ -73,23 +75,23 @@ def ride_detail(request, ride_id):
 
     return render(request, "rides/ride_detail.html", {"ride": ride})
 
-
 def ride_update(request, ride_id):
-    if not is_authenticated(request):
-        return render(request, 'rides/message.html', {
-            'message': "🚫 You must log in to edit a ride."
-        })
+    if not request.user.is_authenticated:
+        return render(request, 'rides/message.html', {'message': "🚫 You must log in to edit a ride."})
 
-    ride = Rides.objects.filter(id=ride_id).first()
-    if not ride:
-        return HttpResponse("Ride not found")
+    ride = get_object_or_404(Rides, id=ride_id)
+    drivers = Drivers.objects.all() 
+    users = User.objects.all()    
 
-    if request.method == "GET":
-        return render(request, "rides/ride_update.html", {"ride": ride})
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        if user_id:
+            ride.user = get_object_or_404(User, id=user_id)
 
-    elif request.method == "POST":
-        ride.user_id = request.POST.get("user_id")
-        ride.driver_id = request.POST.get("driver_id")
+        driver_id = request.POST.get("driver_id")
+        if driver_id:
+            ride.driver = get_object_or_404(Drivers, id=driver_id)
+
         ride.start_location = request.POST.get("start_location")
         ride.end_location = request.POST.get("end_location")
         ride.distance_km = request.POST.get("distance_km")
@@ -98,6 +100,12 @@ def ride_update(request, ride_id):
         ride.save()
 
         return redirect("ride_detail", ride_id=ride.id)
+
+    return render(request, "rides/ride_update.html", {
+        "ride": ride,
+        "drivers": drivers,
+        "users": users,
+    })
 
 
 def ride_delete(request, ride_id):

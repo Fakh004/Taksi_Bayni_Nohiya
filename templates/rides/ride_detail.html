@@ -12,8 +12,8 @@
 
         <ul class="text-gray-200 space-y-2 mb-6">
             <li><strong>ID:</strong> {{ ride.id }}</li>
-            <li><strong>User ID:</strong> {{ ride.user_id }}</li>
-            <li><strong>Driver ID:</strong> {{ ride.driver_id }}</li>
+            <li><strong>User:</strong> {{ ride.user.username }}</li>
+            <li><strong>Driver:</strong> {{ ride.driver.name }}</li>
             <li><strong>Start:</strong> {{ ride.start_location }}</li>
             <li><strong>End:</strong> {{ ride.end_location }}</li>
             <li><strong>Distance (km):</strong> {{ ride.distance_km }}</li>
@@ -21,8 +21,8 @@
             <li><strong>Status:</strong>
                 {% if ride.status == 'completed' %}
                     <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">Completed</span>
-                {% elif ride.status == 'pending' %}
-                    <span class="px-2 py-1 bg-yellow-500 text-white rounded-full text-xs">Pending</span>
+                {% elif ride.status == 'in process' %}
+                    <span class="px-2 py-1 bg-yellow-500 text-white rounded-full text-xs">Waiting for passengers</span>
                 {% else %}
                     <span class="px-2 py-1 bg-gray-500 text-white rounded-full text-xs">Cancelled</span>
                 {% endif %}
