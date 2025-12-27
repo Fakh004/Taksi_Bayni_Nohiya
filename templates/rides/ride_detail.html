@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Ride Details{% endblock %}
+
+{% block main %}
+<div class="container mx-auto py-10 px-4">
+    <div class="max-w-xl mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-8 animate__animated animate__fadeInUp">
+
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-white">Ride Details</h1>
+            <p class="text-gray-400 text-sm">Full information about this ride</p>
+        </div>
+
+        <!-- Ride Info -->
+        <ul class="text-gray-200 space-y-2 mb-6">
+            <li><strong>ID:</strong> {{ ride.id }}</li>
+            <li><strong>User ID:</strong> {{ ride.user_id }}</li>
+            <li><strong>Driver ID:</strong> {{ ride.driver_id }}</li>
+            <li><strong>Start:</strong> {{ ride.start_location }}</li>
+            <li><strong>End:</strong> {{ ride.end_location }}</li>
+            <li><strong>Distance (km):</strong> {{ ride.distance_km }}</li>
+            <li><strong>Price:</strong> {{ ride.price }}</li>
+            <li><strong>Status:</strong>
+                {% if ride.status == 'completed' %}
+                    <span class="px-2 py-1 bg-green-500 text-white rounded-full text-xs">Completed</span>
+                {% elif ride.status == 'pending' %}
+                    <span class="px-2 py-1 bg-yellow-500 text-white rounded-full text-xs">Pending</span>
+                {% else %}
+                    <span class="px-2 py-1 bg-gray-500 text-white rounded-full text-xs">Cancelled</span>
+                {% endif %}
+            </li>
+            <li><strong>Created:</strong> {{ ride.created_at }}</li>
+            <li><strong>Updated:</strong> {{ ride.updated_at }}</li>
+        </ul>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3 mt-4">
+            <a href="{% url 'ride_update' ride.id %}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg text-center font-semibold transition-colors duration-300">
+                Edit
+            </a>
+            <a href="{% url 'ride_delete' ride.id %}" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg text-center font-semibold transition-colors duration-300">
+                Delete
+            </a>
+            <a href="{% url 'ride_list' %}" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg text-center font-semibold transition-colors duration-300">
+                Back
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate__animated { animation-duration: 0.6s; }
+.animate__fadeInUp { animation-name: fadeInUp; }
+</style>
+{% endblock %}

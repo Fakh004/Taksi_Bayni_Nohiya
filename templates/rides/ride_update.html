@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Update Ride{% endblock title %}
+
+{% block main %}
+
+<div class="container mx-auto py-12 px-4">
+    <div class="max-w-2xl mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-xl 
+                rounded-2xl shadow-2xl p-10 animate-fadeInUp">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center 
+                        rounded-2xl bg-gradient-to-br from-green-500 to-green-400 shadow-xl">
+                <i class="bi bi-pencil-square text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white">Update Ride</h1>
+            <p class="text-gray-400 text-sm mt-1">Modify ride information below</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- User ID -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-person-circle mr-1"></i>User ID
+                </label>
+                <input type="number" name="user_id" value="{{ ride.user_id }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- Driver ID -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-person-vcard mr-1"></i>Driver ID
+                </label>
+                <input type="number" name="driver_id" value="{{ ride.driver_id }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- Start Location -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-geo-alt mr-1 text-red-400"></i>Start Location
+                </label>
+                <input type="text" name="start_location" value="{{ ride.start_location }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- End Location -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-flag mr-1 text-blue-400"></i>End Location
+                </label>
+                <input type="text" name="end_location" value="{{ ride.end_location }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- Distance -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-map mr-1"></i>Distance (km)
+                </label>
+                <input type="number" step="0.1" name="distance_km" value="{{ ride.distance_km }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- Price -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-cash-coin mr-1"></i>Price
+                </label>
+                <input type="number" step="0.01" name="price" value="{{ ride.price }}"
+                       class="w-full bg-white/10 text-white p-3 rounded-xl 
+                              focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label class="block text-gray-300 font-semibold mb-1">
+                    <i class="bi bi-toggle-on mr-1"></i>Status
+                </label>
+                <select name="status"
+                        class="w-full bg-white/10 text-white p-3 rounded-xl 
+                               focus:ring-2 focus:ring-green-500 focus:outline-none">
+                    <option class="text-black" value="Pending" {% if ride.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option class="text-black" value="Completed" {% if ride.status == "Completed" %}selected{% endif %}>Completed</option>
+                    <option class="text-black" value="Cancelled" {% if ride.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                <button type="submit"
+                        class="flex-1 bg-gradient-to-r from-green-500 to-green-600 
+                               hover:from-green-600 hover:to-green-700 text-white py-3 rounded-xl
+                               font-bold shadow-lg hover:shadow-2xl transform hover:-translate-y-1
+                               transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="bi bi-check-circle"></i>
+                    Save Changes
+                </button>
+
+                <a href="{% url 'ride_detail' ride.id %}"
+                   class="flex-1 border border-white/20 text-white py-3 rounded-xl 
+                          font-bold hover:bg-white/10 shadow-lg hover:shadow-2xl
+                          transform hover:-translate-y-1 transition-all duration-300
+                          flex items-center justify-center gap-2">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<style>
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+</style>
+
+{% endblock main %}
