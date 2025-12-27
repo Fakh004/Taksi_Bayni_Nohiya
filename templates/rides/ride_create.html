@@ -16,13 +16,13 @@
             {% csrf_token %}
 
 
-<select name="driver_username" required
+<select name="driver_name" required
         class="w-full p-3 rounded-lg bg-gray-800 text-white">
     <option value="" disabled selected>Select driver</option>
 
     {% for driver in drivers %}
-        <option value="{{ driver.user.username }}">
-            {{ driver.user.username }} — {{ driver.car_model }}
+        <option value="{{ driver.name }}">
+            {{ driver.name }} — {{ driver.car_model }}
         </option>
     {% endfor %}
 </select>

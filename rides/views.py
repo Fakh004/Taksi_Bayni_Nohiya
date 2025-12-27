@@ -28,6 +28,7 @@ def ride_list(request):
 
 
 
+
 def ride_create(request):
     if not is_authenticated(request):
         return render(request, 'rides/message.html', {
@@ -35,25 +36,16 @@ def ride_create(request):
         })
 
     if request.method == "GET":
-        drivers = Drivers.objects.select_related('user').all()
-        return render(request, "rides/ride_create.html", {
-            "drivers": drivers
-        })
+        drivers = Drivers.objects.all()
+        return render(request, "rides/ride_create.html", {"drivers": drivers})
 
     if request.method == "POST":
-        driver_id = request.POST.get("driver")
-        if not driver_id:
-            drivers = Drivers.objects.all()
-            return render(request, "rides/ride_create.html", {
-                "drivers": drivers,
-                "error": "Please select a driver"
-            })
-
-        driver = Drivers.objects.get(id=driver_id)
+        driver_name = request.POST.get("driver_name")
+        driver = Drivers.objects.get(name=driver_name)
 
         ride = Rides.objects.create(
-            user=request.user,         
-            driver=driver,             
+            user=request.user,
+            driver=driver,
             start_location=request.POST.get("start_location"),
             end_location=request.POST.get("end_location"),
             distance_km=request.POST.get("distance_km"),
