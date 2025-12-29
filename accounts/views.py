@@ -3,7 +3,6 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from .models import CustomUser
 
-# --- Registration ---
 def register_view(request):
     if request.method == "GET":
         return render(request, 'accounts/register.html')
@@ -32,13 +31,6 @@ def register_view(request):
             return render(request, 'accounts/register.html', {
                 'username': username,
                 'error': 'Username already taken!'
-            })
-
-        if CustomUser.objects.filter(email=email).exists():
-            return render(request, 'accounts/register.html', {
-                'username': username,
-                'email': email,
-                'error': 'Email already registered!'
             })
 
         user = CustomUser.objects.create_user(username=username, email=email, password=password)
@@ -70,5 +62,9 @@ def login_view(request):
             'error': "Incorrect username or password!"
         })
 
-def logout_confirm(request):
-    return render(request, "logout_confirm.html")
+def logout_confirm_view(request):
+    return render(request, "accounts/logout_confirm.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect('driver_list')
