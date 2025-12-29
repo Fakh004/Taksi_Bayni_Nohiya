@@ -9,4 +9,6 @@ urlpatterns = [
     path('<int:driver_id>/', driver_detail, name='driver_detail'),
     path('<int:driver_id>/update/', driver_update, name='driver_update'),
     path('<int:driver_id>/delete/', driver_delete_view, name='driver_delete'),
+    path('profile/', profile_view, name='profile'),
+    path('profile/update/', profile_update, name='profile_update'),
 ]

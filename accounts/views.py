@@ -34,8 +34,8 @@ def register_view(request):
             })
 
         user = CustomUser.objects.create_user(username=username, email=email, password=password)
-        login(request, user)
-        return redirect('driver_list')  
+        login(request, user)  
+        return redirect('driver_list')
 
 
 def login_view(request):
