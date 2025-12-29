@@ -1,69 +1,57 @@
-{% extends "base.html" %}
-{% block title %}My Bookings{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование места</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-white">
 
-{% block main %}
 <div class="container mx-auto py-10 px-4">
-    <div class="max-w-4xl mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-8 animate__animated animate__fadeInUp">
+    <div class="max-w-md mx-auto bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-2xl shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-center mb-6">Бронирование места в машине</h2>
 
-        <h2 class="text-3xl font-bold text-center text-white mb-6">📋 My Bookings</h2>
+        <p class="mb-4">Поездка: {{ ride.driver.name }} - {{ ride.car_model }}</p>
 
-        {% if bookings %}
-            <div class="overflow-x-auto rounded-lg">
-                <table class="min-w-full text-white">
-                    <thead class="bg-gray-800">
-                        <tr>
-                            <th class="py-2 px-4 border-b">Ride</th>
-                            <th class="py-2 px-4 border-b">Driver</th>
-                            <th class="py-2 px-4 border-b">Seat</th>
-                            <th class="py-2 px-4 border-b">From</th>
-                            <th class="py-2 px-4 border-b">To</th>
-                            <th class="py-2 px-4 border-b">Booked At</th>
-                            <th class="py-2 px-4 border-b">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for booking in bookings %}
-                        <tr class="text-center hover:bg-gray-700 transition-colors duration-200">
-                            <td class="py-2 px-4 border-b">{{ booking.ride.id }}</td>
-                            <td class="py-2 px-4 border-b">{{ booking.ride.driver.name }}</td>
-                            <td class="py-2 px-4 border-b">{{ booking.seat_number }}</td>
-                            <td class="py-2 px-4 border-b">{{ booking.ride.start_location }}</td>
-                            <td class="py-2 px-4 border-b">{{ booking.ride.end_location }}</td>
-                            <td class="py-2 px-4 border-b">{{ booking.booked_at|date:"M d, Y H:i" }}</td>
-                            <td class="py-2 px-4 border-b space-x-2">
-                                <a href="{% url 'ride_detail' booking.ride.id %}"
-                                   class="bg-teal-500 hover:bg-teal-600 text-white px-2 py-1 rounded text-sm">
-                                    View Ride
-                                </a>
-                                <a href="{% url 'ride_book_cancel' booking.id %}"
-                                   class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">
-                                    Cancel Booking
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p class="text-center text-gray-300 text-lg">You have no bookings yet.</p>
+        {% if error %}
+            <p class="text-red-500 mb-4">{{ error }}</p>
         {% endif %}
 
-        <div class="text-center mt-6">
-            <a href="{% url 'ride_list' %}"
-               class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold">
-                Back to Rides
-            </a>
-        </div>
+        {% if available_seats %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label for="name" class="block mb-1 font-semibold">Ваше имя:</label>
+                <input type="text" id="name" name="name" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white" required>
+            </div>
+
+            <div>
+                <label for="phone" class="block mb-1 font-semibold">Телефон:</label>
+                <input type="text" id="phone" name="phone" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white" required>
+            </div>
+
+            <div>
+                <label for="seat_number" class="block mb-1 font-semibold">Выберите место:</label>
+                <select id="seat_number" name="seat_number" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white">
+                    {% for seat in available_seats %}
+                        <option value="{{ seat }}">Место {{ seat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg font-semibold transition-colors duration-300">
+                    Забронировать
+                </button>
+            </div>
+        </form>
+        {% else %}
+            <p class="text-red-400 text-center">Все места уже забронированы!</p>
+        {% endif %}
     </div>
 </div>
 
-<style>
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate__animated { animation-duration: 0.6s; }
-.animate__fadeInUp { animation-name: fadeInUp; }
-</style>
-{% endblock %}
+</body>
+</html>
