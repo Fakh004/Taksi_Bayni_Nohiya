@@ -131,8 +131,10 @@ def book_list(request):
     return render(request, 'rides/booking_list.html', {'bookings': bookings})
 
 
+
 def book_ride(request, ride_id):
     ride = get_object_or_404(Rides, id=ride_id)
+
     booked = RideBooking.objects.filter(ride=ride).values_list('seat_number', flat=True)
     all_seats = [1, 2, 3, 4]
     available_seats = [s for s in all_seats if s not in booked]
@@ -170,8 +172,11 @@ def book_ride(request, ride_id):
                 "phone": phone
             })
 
+        user = request.user if request.user.is_authenticated else None
+
         RideBooking.objects.create(
             ride=ride,
+            user=user,  
             name=name,
             phone=phone,
             seat_number=seat
