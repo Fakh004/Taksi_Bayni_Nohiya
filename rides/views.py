@@ -132,59 +132,36 @@ def book_list(request):
 
 
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def book_ride(request, ride_id):
     ride = get_object_or_404(Rides, id=ride_id)
+    booked_seats = RideBooking.objects.filter(ride=ride).values_list('seat_number', flat=True)
+    available_seats = [1, 2, 3, 4] 
+    available_seats = [s for s in available_seats if s not in booked_seats]
 
-    booked = RideBooking.objects.filter(ride=ride).values_list('seat_number', flat=True)
-    all_seats = [1, 2, 3, 4]
-    available_seats = [s for s in all_seats if s not in booked]
+    if request.method == 'POST':
+        seat_number = int(request.POST.get('seat_number'))
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
 
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        phone = request.POST.get("phone", "").strip()
-        seat = request.POST.get("seat_number")
-
-        if not name or not phone:
-            return render(request, "rides/booking_create.html", {
-                "ride": ride,
-                "available_seats": available_seats,
-                "error": "Name and phone are required!",
-                "name": name,
-                "phone": phone
+        if seat_number not in available_seats:
+            return render(request, 'rides/book_ride.html', {
+                'ride': ride,
+                'available_seats': available_seats,
+                'error': "Это место уже забронировано!"
             })
-
-        if not seat:
-            return render(request, "rides/booking_create.html", {
-                "ride": ride,
-                "available_seats": available_seats,
-                "error": "Please choose a seat!",
-                "name": name,
-                "phone": phone
-            })
-
-        seat = int(seat)
-        if seat not in available_seats:
-            return render(request, "rides/booking_create.html", {
-                "ride": ride,
-                "available_seats": available_seats,
-                "error": "This seat is already taken!",
-                "name": name,
-                "phone": phone
-            })
-
-        user = request.user if request.user.is_authenticated else None
 
         RideBooking.objects.create(
             ride=ride,
-            user=user,  
+            user=request.user,
             name=name,
             phone=phone,
-            seat_number=seat
+            seat_number=seat_number
         )
-
-        return redirect("booking_list")
-
-    return render(request, "rides/booking_create.html", {
-        "ride": ride,
-        "available_seats": available_seats
+        return redirect('ride_detail', ride_id=ride.id) 
+    return render(request, 'rides/book_ride.html', {
+        'ride': ride,
+        'available_seats': available_seats
     })

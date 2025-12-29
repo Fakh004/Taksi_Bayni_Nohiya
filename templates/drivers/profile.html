@@ -133,9 +133,12 @@
                     <i class="bi bi-pencil-square"></i>
                     Редактировать профиль
                 </a>
+                <a href="{% url 'home' %}" class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 hover-lift shadow-lg hover:shadow-xl">
+                    <i class="bi bi-house-door"></i>
+                    В главную
+                </a>
             </div>
 
-            <!-- Правая колонка - Детали профиля -->
             <div class="lg:col-span-2">
                 <div class="card-glass rounded-3xl p-8 border border-white/10 mb-6">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
@@ -194,7 +197,6 @@
                     </div>
                 </div>
                 
-                <!-- Биография -->
                 <div class="card-glass rounded-3xl p-8 border border-white/10 mb-6">
                     <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                         <i class="bi bi-chat-left-text text-yellow-400"></i>
@@ -224,7 +226,6 @@
     </footer>
 
     <script>
-        // Анимация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
             const elements = document.querySelectorAll('.card-glass');
             elements.forEach((el, index) => {

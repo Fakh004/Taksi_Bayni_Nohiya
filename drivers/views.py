@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Drivers
+from django.contrib.auth.decorators import login_required
 
 def is_authenticated(request):
     return request.user.is_authenticated
@@ -102,10 +103,9 @@ def driver_delete_view(request, driver_id):
         return redirect("driver_list")
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 
-@login_required  # автоматически проверяет, что пользователь авторизован
+
+@login_required  
 def profile_view(request):
     profile = request.user.profile
     return render(request, 'drivers/profile.html', {'profile': profile})
