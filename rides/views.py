@@ -4,6 +4,8 @@ from .models import Rides, RideBooking
 from drivers.models import Drivers
 from django.shortcuts import get_object_or_404
 from accounts.models import CustomUser as User
+from django.contrib.auth.decorators import login_required
+
 
 
 
@@ -27,7 +29,6 @@ def ride_list(request):
         rides = rides.filter(status=status)
 
     return render(request, "rides/rides_list.html", {"rides": rides})
-
 
 
 
@@ -127,41 +128,27 @@ def ride_delete(request, ride_id):
 
 
 def book_list(request):
-    bookings = RideBooking.objects.filter(user=request.user)
+    bookings = RideBooking.objects.all()
     return render(request, 'rides/booking_list.html', {'bookings': bookings})
 
-
-
-from django.contrib.auth.decorators import login_required
-
-@login_required
 def book_ride(request, ride_id):
-    ride = get_object_or_404(Rides, id=ride_id)
-    booked_seats = RideBooking.objects.filter(ride=ride).values_list('seat_number', flat=True)
-    available_seats = [1, 2, 3, 4] 
-    available_seats = [s for s in available_seats if s not in booked_seats]
+    if request.method == 'GET':
+        ride = get_object_or_404(Rides, id=ride_id)
+        return render(request, 'rides/booking_create.html', {'ride': ride})
+    elif request.method == 'POST':
+        ride = get_object_or_404(Rides, id=ride_id)
+        passenger_name = request.POST.get('passenger_name')
+        contact_info = request.POST.get('contact_info')
 
-    if request.method == 'POST':
-        seat_number = int(request.POST.get('seat_number'))
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-
-        if seat_number not in available_seats:
-            return render(request, 'rides/book_ride.html', {
-                'ride': ride,
-                'available_seats': available_seats,
-                'error': "Это место уже забронировано!"
-            })
-
-        RideBooking.objects.create(
+        booking = RideBooking.objects.create(
             ride=ride,
-            user=request.user,
-            name=name,
-            phone=phone,
-            seat_number=seat_number
+            passenger_name=passenger_name,
+            contact_info=contact_info
         )
-        return redirect('ride_detail', ride_id=ride.id) 
-    return render(request, 'rides/book_ride.html', {
-        'ride': ride,
-        'available_seats': available_seats
-    })
+        return redirect('book_list')
+
+
+
+
+
+
