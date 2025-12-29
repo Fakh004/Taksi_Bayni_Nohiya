@@ -100,3 +100,30 @@ def driver_delete_view(request, driver_id):
     elif request.method == "POST":
         driver.delete()
         return redirect("driver_list")
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required  # автоматически проверяет, что пользователь авторизован
+def profile_view(request):
+    profile = request.user.profile
+    return render(request, 'drivers/profile.html', {'profile': profile})
+
+@login_required
+def profile_update(request):
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        profile.bio = request.POST.get('bio', '')
+        profile.experience_years = request.POST.get('experience_years', 0)
+        profile.languages_spoken = request.POST.get('languages_spoken', '')
+
+        if request.FILES.get('image'): 
+            profile.image = request.FILES['image']
+
+        profile.save()
+        return redirect('profile')  
+
+    return render(request, 'drivers/profile_update.html', {'profile': profile})
+

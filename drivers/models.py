@@ -25,10 +25,20 @@ class Reviews(models.Model):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
+from django.conf import settings
+from django.db import models
+
 class Profiles(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
     image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
-    driver_id = models.IntegerField()
-    bio = models.TextField()
-    experience_years = models.IntegerField()
-    languages_spoken = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now=True)
+    bio = models.TextField(blank=True)
+    experience_years = models.IntegerField(default=0)
+    languages_spoken = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Profile of {self.user.username}"
